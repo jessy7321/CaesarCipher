@@ -1,0 +1,95 @@
+import edu.duke.*;
+public class CaesarBreaker {
+    int[] countLetters(String message){
+        String alpha = "abcdefghijklmnopqrstuvwxyz";
+        int[] counts = new int[26];
+        for(int k = 0; k < message.length(); k++){
+            //converts the character into lowercase and then finds its index in alpha string
+            char ch = Character.toLowerCase(message.charAt(k));
+            int find = alpha.indexOf(ch);
+            //increments only is its a letter
+            if(find != -1){
+                counts[find] += 1;
+            }
+        }
+        return counts;
+    }
+    
+    int maxIndex(int[] counts){
+        int maxPos = 0;
+        for(int i = 1; i < counts.length; i++){
+            if(counts[maxPos] < counts[i])
+                maxPos = i;
+        }
+        //returning the maximum value in the array
+        return maxPos;
+    }
+    
+    public String decrypt(String encrypted){
+        CaesarCipher cc = new CaesarCipher();
+        //counting the number of occurences
+        int[] freqs = countLetters(encrypted);
+        //finding the maximum occurence
+        int maxCount = maxIndex(freqs);
+        //bring it to 'e'
+        int dkey = maxCount - 4;
+        if(maxCount < 4){
+            dkey = 26 - (4 - maxCount);
+        }
+        //return decrypted message
+        return cc.encrypt(encrypted,26 - dkey);
+    }
+    
+    void testDecrypt(){
+        String actual = "WE ATTACK AT MIDNIGHT";
+        String encrypted = "AI EXXEGO EX QMHRMKLX";
+        String decrypted = decrypt(encrypted);
+        System.out.println("The actual message is: " + actual + "\nEncrypted message is: " + encrypted + "\nDecrypted message is: " + decrypted);
+    }
+    
+    String halfOfString(String message, int start){
+        String send = "";
+        for(int i = start; i < message.length(); i+=2){
+            send = send + message.charAt(i);
+        }
+        return send;
+    }
+    
+    void testHalfOfString(){
+        String message = "Qbkm Zgis";
+        String temp = halfOfString(message, 0);
+        String temp2 = halfOfString(message, 1);
+        System.out.println(temp + " " + temp2);
+    }
+    
+    int getKey(String s){
+        int[] counts = countLetters(s);
+        int max = maxIndex(counts);
+        int key = max - 4;
+        if(max < 4){
+            key = 26 - (4 - max);
+        }
+        return key;
+    }
+    
+    String decryptTwoKeys(String encrypted){
+        CaesarCipher cc = new CaesarCipher();
+        //getting first half String
+        String firstString = halfOfString(encrypted, 0);
+        //getting second half String
+        String secondString = halfOfString(encrypted, 1);
+        //getting the keys for both halfstrings
+        int key1 = getKey(firstString);
+        int key2 = getKey(secondString);       
+        System.out.println("The keys are: " + key1 + ", " + key2);
+        //decrypting
+        return cc.encryptTwoKeys(encrypted, 26 - key1, 26 - key2);
+    }
+    //testing decryptTwoKeys
+    void testDecryptTwoKeys(){
+        //FileResource fr = new FileResource();  //use this for encrypting files
+        //String message = fr.asString();
+        String message = "Aal uttx hm aal Qtct Fhljha pl Wbdl. Pvxvxlx!";
+        System.out.println(decryptTwoKeys(message));
+    }
+}

@@ -1,0 +1,100 @@
+import edu.duke.*;
+public class CaesarCipher {
+    //implementing Caesar Cipher
+    public String encrypt(String input, int key){
+        StringBuilder sb = new StringBuilder(input);
+        //actual alphabet string
+        //                 01234567890123456789012345
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        //shifted alphabet string based on the key
+        String shiftedAlphabet = alphabet.substring(key) + alphabet.substring(0,key);
+        for(int i = 0; i < sb.length() ; i++){
+            //take a character from the given string
+            char currChar = sb.charAt(i);
+            //find that character's index in the actual alphabet string
+            //Lowercase letters handled by converting them into uppercase
+            int idx = alphabet.indexOf(Character.toUpperCase(currChar));
+            //if no error
+            if(idx != -1){
+                //get the character at that index in the shifted alphabet string            
+                char newChar = shiftedAlphabet.charAt(idx);
+                //replace with that shifted character instead of actual character
+                //replace with lowercase if actual character is lowercase
+                if(Character.isLowerCase(sb.charAt(i))){
+                    sb.setCharAt(i, Character.toLowerCase(newChar));
+                }
+                //or else default uppercase
+                else{
+                    sb.setCharAt(i, newChar);
+                }
+            }
+        }
+        //return the string
+        return sb.toString();
+    }
+    
+    //testing encrypt()
+    void test(){
+        int key = 15;
+        //reading text file
+        /*FileResource fr = new FileResource();
+        String message = fr.asString();*/
+        String message = "Can you imagine life WITHOUT the internet AND computers in your pocket?";
+        //encrypting it
+        String encrypted = encrypt(message, key);
+        //displaying
+        System.out.println("The actual message is: " + message);
+        System.out.println("The encrypted message is: " + encrypted);
+    }
+    
+    public String encryptTwoKeys(String input, int key1, int key2){
+        StringBuilder sb = new StringBuilder(input);
+        //actual alphabet string
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        //shifted alphabet string based on the key
+        String shiftedAlphabet1 = alphabet.substring(key1) + alphabet.substring(0,key1);
+        String shiftedAlphabet2 = alphabet.substring(key2) + alphabet.substring(0,key2);
+        for(int i = 0; i < sb.length() ; i++){
+            //take a character from the given string
+            char currChar = sb.charAt(i);
+            //find that character's index in the actual alphabet string - Lowercase handled by converting into uppercase
+            int idx = alphabet.indexOf(Character.toUpperCase(currChar));
+            //if no error
+            if(idx != -1){
+                char newChar;              
+                if(i % 2 == 0){
+                    //get the character at that index in the first shifted alphabet string            
+                    newChar = shiftedAlphabet1.charAt(idx);                    
+                }
+                else{
+                    //get the character at that index in the second shifted alphabet string 
+                    newChar = shiftedAlphabet2.charAt(idx);
+                }
+                //replace with that shifted character instead of actual character
+                //replace with lowercase if actual character is lowercase
+                if(Character.isLowerCase(sb.charAt(i))){
+                    sb.setCharAt(i, Character.toLowerCase(newChar));
+                }
+                //or else default uppercase
+                else{
+                    sb.setCharAt(i, newChar);
+                }
+            }
+        }
+        //return the string
+        return sb.toString();
+    }
+    
+    void testEncryptTwoKeys(){
+        int key1 = 21, key2 = 8;
+        //reading text file
+        /*FileResource fr = new FileResource();
+        String message = fr.asString();*/
+        String message = "Can you imagine life WITHOUT the internet AND computers in your pocket?";
+        //encrypting it
+        String encrypted = encryptTwoKeys(message, key1, key2);
+        //displaying
+        System.out.println("The actual message is: " + message);
+        System.out.println("The encrypted message is: " + encrypted);
+    }
+}
